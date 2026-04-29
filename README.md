@@ -9,38 +9,89 @@ Elle contient déjà :
 - une gestion de notes
 - une configuration simple avec Supabase et Vercel
 
-## 1. Installer
+## 1. Installer le projet
 
-Installez Node.js, puis ouvrez ce dossier dans votre terminal.
+Installez Docker Desktop, puis lancez cette commande dans votre terminal :
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/daverag/formation-ia/main/install.sh | bash
+```
+
+Si le repo est privé ou pas encore publié, utilisez :
+
+```bash
+FORMATION_IA_REPO_URL=https://github.com/daverag/formation-ia.git bash -c "$(curl -fsSL https://raw.githubusercontent.com/daverag/formation-ia/main/install.sh)"
+```
+
+Le script clone le projet, puis lance automatiquement `./setup`.
+
+Si le projet est déjà cloné, ouvrez ce dossier dans votre terminal.
 
 Lancez :
 
 ```bash
-npm install
+./setup
 ```
 
-Créez un fichier `.env` en copiant `.env.example`.
+Le script va :
 
-Dans `.env`, remplacez les valeurs par celles de votre projet Supabase :
+- créer le fichier `.env`
+- récupérer les clés Supabase
+- lancer Docker
+- appliquer la première migration
+- créer le compte admin
+- écrire les identifiants dans `.admin-credentials.txt`
+
+Ouvrez ensuite l’adresse affichée à la fin du script.
+
+Avec la valeur par défaut :
+
+```text
+http://localhost:8080
+```
+
+La première installation peut prendre quelques minutes, le temps que Docker prépare le projet.
+
+Pour arrêter le projet :
 
 ```bash
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
+docker compose down
 ```
 
-Dans Supabase, ouvrez l’éditeur SQL et copiez le contenu du fichier `supabase-schema.sql`.
+## 2. Informations demandées par setup
 
-## 2. Lancer le projet
+Le script demande :
 
-Lancez :
+- le port local de l’application
+- l’URL Supabase
+- le Supabase access token
+- l’email admin
+
+Le Supabase access token sert à récupérer les clés du projet et à appliquer la migration SQL.
+
+Il reste uniquement dans le fichier local `.env`, qui est ignoré par Git.
+
+## 3. Compte admin
+
+Le compte admin est créé par `./setup`.
+
+Le script génère toujours un nouveau mot de passe et l’écrit ici :
+
+```text
+.admin-credentials.txt
+```
+
+Ce fichier est ignoré par Git. Il reste sur votre ordinateur et ne part pas sur Vercel ou GitHub.
+
+Pour régénérer seulement le compte admin :
 
 ```bash
-npm run dev
+docker compose run --rm app npm run setup-admin
 ```
 
-Ouvrez l’adresse affichée dans le terminal.
+Si le compte existe déjà, le script garde le même email et remplace le mot de passe par un nouveau.
 
-## 3. Où modifier le code
+## 4. Où modifier le code
 
 Les fichiers importants sont dans `src`.
 
@@ -54,7 +105,39 @@ Pour modifier le dashboard, commencez par `src/pages/Dashboard.jsx`.
 
 Pour modifier les notes, regardez `src/components/NoteForm.jsx` et `src/components/NotesList.jsx`.
 
-## 4. Comment ajouter une fonctionnalité simple
+## 5. Commandes utiles
+
+Relancer le projet :
+
+```bash
+docker compose up -d
+```
+
+Voir les logs :
+
+```bash
+docker compose logs -f
+```
+
+Arrêter un projet lancé en arrière-plan :
+
+```bash
+docker compose down
+```
+
+Construire la version de production :
+
+```bash
+docker compose run --rm app npm run build
+```
+
+Appliquer la migration Supabase :
+
+```bash
+docker compose run --rm app npm run migrate
+```
+
+## 6. Comment ajouter une fonctionnalité simple
 
 Faites un petit changement à la fois.
 
@@ -66,7 +149,7 @@ Exemple :
 4. Testez dans le navigateur.
 5. Faites un commit Git si tout fonctionne.
 
-## 5. Déployer
+## 7. Déployer
 
 Créez un compte Vercel.
 
@@ -79,20 +162,21 @@ Dans les réglages du projet Vercel, ajoutez les mêmes variables que dans `.env
 
 Cliquez ensuite sur Deploy.
 
-## 6. Que faire si ça ne marche pas
+## 8. Que faire si ça ne marche pas
 
 Vérifiez dans cet ordre :
 
-1. `npm install` a bien été lancé.
-2. Le fichier `.env` existe.
-3. Les clés Supabase sont correctes.
-4. Le fichier `supabase-schema.sql` a bien été exécuté dans Supabase.
-5. Vous avez relancé `npm run dev` après avoir modifié `.env`.
+1. Docker Desktop est ouvert.
+2. La commande `docker compose up` est lancée dans le bon dossier.
+3. Le fichier `.env` existe.
+4. Les clés Supabase sont correctes.
+5. Le fichier `supabase-schema.sql` a bien été exécuté dans Supabase.
+6. Vous avez relancé `docker compose up` après avoir modifié `.env`.
 
 Si le projet est cassé après un changement, lancez :
 
 ```bash
-npm run reset
+docker compose run --rm app npm run reset
 ```
 
 Cela revient au dernier commit Git stable.

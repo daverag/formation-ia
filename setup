@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+set -e
+
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT_DIR"
+
+if ! docker compose version >/dev/null 2>&1; then
+  echo "Docker Compose est introuvable."
+  echo "Installez Docker Desktop, ouvrez-le, puis relancez ./setup."
+  exit 1
+fi
+
+read_value() {
+  local label="$1"
+  local default_value="$2"
+  local value
+
+  if [ -n "$default_value" ]; then
+    read -r -p "$label [$default_value] : " value
+    echo "${value:-$default_value}"
+  else
+    read -r -p "$label : " value
+    echo "$value"
+  fi
+}
+
+read_secret() {
+  local label="$1"
+  local value
+  read -r -s -p "$label : " value
+  echo ""
+  echo "$value"
+}
+
+current_env_value() {
+  local key="$1"
+  if [ -f .env ]; then
+    grep -E "^${key}=" .env | tail -n 1 | cut -d "=" -f 2-
+  fi
+}
+
+APP_PORT="$(current_env_value APP_PORT)"
+SUPABASE_URL="$(current_env_value VITE_SUPABASE_URL)"
+SUPABASE_TOKEN="$(current_env_value SUPABASE_ACCESS_TOKEN)"
+ADMIN_EMAIL="$(current_env_value ADMIN_EMAIL)"
+
+APP_PORT="$(read_value "Port local de l'application" "${APP_PORT:-8080}")"
+SUPABASE_URL="$(read_value "URL Supabase" "$SUPABASE_URL")"
+
+if [ -z "$SUPABASE_TOKEN" ] || [[ "$SUPABASE_TOKEN" == *"remplacez"* ]]; then
+  SUPABASE_TOKEN="$(read_secret "Supabase access token")"
+fi
+
+ADMIN_EMAIL="$(read_value "Email admin" "${ADMIN_EMAIL:-admin@boilerplate.local}")"
+
+cat > .env <<ENV
+APP_PORT=$APP_PORT
+
+VITE_SUPABASE_URL=$SUPABASE_URL
+VITE_SUPABASE_ANON_KEY=
+
+# Clés privées locales. Ne jamais les utiliser dans le code React.
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_ACCESS_TOKEN=$SUPABASE_TOKEN
+
+ADMIN_EMAIL=$ADMIN_EMAIL
+ENV
+
+echo ""
+echo "1/5 Construction Docker..."
+docker compose build
+
+echo ""
+echo "2/5 Configuration Supabase..."
+docker compose run --rm app npm run configure-supabase
+
+echo ""
+echo "3/5 Première migration Supabase..."
+docker compose run --rm app npm run migrate
+
+echo ""
+echo "4/5 Création du compte admin..."
+docker compose run --rm app npm run setup-admin
+
+echo ""
+echo "5/5 Démarrage de l'application..."
+docker compose up -d
+
+echo ""
+echo "Installation terminée."
+echo "Application : http://localhost:$APP_PORT"
+echo "Identifiants admin : .admin-credentials.txt"

@@ -1,6 +1,7 @@
 node_modules
 dist
 .npm-cache
+.git
 .env
 .admin-credentials.txt
 .DS_Store

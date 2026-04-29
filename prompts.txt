@@ -1,0 +1,27 @@
+# Prompts utiles pour modifier ce projet
+
+Copiez un prompt, puis ajoutez votre besoin précis.
+
+## Ajouter un champ à la note
+
+Ajoute un champ simple à la note. Explique-moi d’abord quel fichier Supabase modifier, puis modifie le formulaire et l’affichage. Garde le code simple.
+
+## Créer une nouvelle page
+
+Crée une nouvelle page simple dans ce projet. Ajoute uniquement le nécessaire et explique où je peux modifier le texte.
+
+## Ajouter un bouton
+
+Ajoute un bouton à cet endroit : [décrire l’endroit]. Le bouton doit être cohérent avec les autres boutons du projet.
+
+## Corriger une erreur
+
+Corrige cette erreur sans ajouter de complexité. Explique-moi simplement ce qui était cassé et ce que tu as changé.
+
+## Améliorer une section
+
+Améliore cette section sans refaire toute l’application. Garde le même style visuel.
+
+## Revenir à une version stable
+
+Explique-moi comment revenir à la dernière version stable du projet avec la commande npm run reset.

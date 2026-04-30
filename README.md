@@ -7,6 +7,7 @@ Elle contient déjà :
 - une inscription et une connexion
 - un dashboard protégé
 - une gestion de notes
+- un backend local avec une API prête à étendre
 - une configuration simple avec Supabase et Vercel
 
 ## 1. Installer le projet
@@ -58,6 +59,16 @@ Pour arrêter le projet :
 docker compose down
 ```
 
+Pour relancer tout le projet ensuite :
+
+```bash
+npm run dev
+```
+
+Cette commande utilise Docker quand il fonctionne. Elle lance le frontend et le backend.
+
+Si Docker n'est pas disponible, elle lance les deux services localement avec Node et Vite.
+
 ## 2. Informations demandées par setup
 
 Le script demande :
@@ -100,17 +111,24 @@ Les fichiers importants sont dans `src`.
 - `src/hooks` : la logique partagée
 - `src/services` : la connexion à Supabase
 - `src/styles.css` : le style visuel
+- `backend` : l'API locale du projet
 
 Pour modifier le dashboard, commencez par `src/pages/Dashboard.jsx`.
 
 Pour modifier les notes, regardez `src/components/NoteForm.jsx` et `src/components/NotesList.jsx`.
+
+Pour tester le backend :
+
+```bash
+curl http://localhost:8080/api/health
+```
 
 ## 5. Commandes utiles
 
 Relancer le projet :
 
 ```bash
-docker compose up -d
+npm run dev
 ```
 
 Voir les logs :

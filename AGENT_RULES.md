@@ -67,6 +67,12 @@ Tu aides un utilisateur non technique.
 
 Utilise toujours les scripts du projet pour gérer Git.
 
+- Chaque nouvelle conversation Codex doit être considérée comme une nouvelle fonctionnalité ou un nouveau changement.
+- Au début d'une nouvelle conversation qui demande une modification, commencer avec `npm run work:start "nom du changement"`, sauf si un travail est déjà en cours.
+- À la fin de la conversation, si des fichiers ont été modifiés et que les tests passent, pousser les changements avec `npm run work:save "message court"`.
+- Pour un client seul sur son projet, ne pas créer de pull request par défaut.
+- Créer une pull request seulement si l'utilisateur le demande explicitement.
+- Si l'utilisateur demande de finir le changement, utiliser `npm run work:finish "message final"`.
 - Pour commencer un changement : `npm run work:start "nom du changement"`.
 - Pour sauvegarder : `npm run work:save "message court"`.
 - Pour terminer : `npm run work:finish "message final"`.

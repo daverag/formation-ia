@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.js",
+    "dev:local": "node scripts/dev-local.js",
+    "dev:vite": "vite",
+    "backend": "node backend/server.js",
     "build": "vite build",
     "preview": "vite preview",
     "configure-supabase": "node scripts/configure-supabase.js",

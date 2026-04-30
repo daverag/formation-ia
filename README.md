@@ -1,14 +1,18 @@
 # Boilerplate web simple
 
-Cette application est une base prête à modifier pour créer un petit outil web.
+Cette application est une base prête à modifier pour créer un petit outil web de formation IA.
 
 Elle contient déjà :
 
-- une inscription et une connexion
-- un dashboard protégé
-- une gestion de notes
+- une page publique pour présenter l'offre Formation IA
+- une inscription et une connexion avec Supabase
+- un espace admin protégé
+- un dashboard avec aperçu, notes, utilisateurs et paramètres
+- une gestion de notes par compte connecté
+- une gestion simple d'utilisateurs avec rôles
 - un backend local avec une API prête à étendre
-- une configuration simple avec Supabase et Vercel
+- une base Supabase avec sécurité par utilisateur
+- une configuration simple avec Docker, Supabase et Vercel
 
 ## 1. Installer le projet
 
@@ -82,7 +86,55 @@ Le Supabase access token sert à récupérer les clés du projet et à appliquer
 
 Il reste uniquement dans le fichier local `.env`, qui est ignoré par Git.
 
-## 3. Compte admin
+## 3. Ce que contient l'application
+
+### Page publique
+
+La page d'accueil présente l'offre Formation IA.
+
+Elle contient :
+
+- une navigation simple
+- une section de présentation
+- un résumé du plan de lancement
+- des indicateurs
+- une section programme
+- un bouton vers le dashboard
+
+Le fichier principal est :
+
+```text
+src/pages/PublicHome.jsx
+```
+
+### Espace admin
+
+Le dashboard est protégé. Une personne non connectée est envoyée vers la page de connexion.
+
+L'espace admin contient :
+
+- `Tableau de bord` : aperçu des notes et état du compte
+- `Notes` : création, modification et suppression de notes
+- `Utilisateurs` : ajout d'utilisateurs, changement de rôle et suppression
+- `Paramètres` : informations de profil et préférences d'affichage
+
+Les fichiers principaux sont :
+
+```text
+src/pages/Dashboard.jsx
+src/components/AdminLayout.jsx
+```
+
+### Données Supabase
+
+Le fichier `supabase-schema.sql` crée deux tables :
+
+- `notes` : notes privées liées au compte connecté
+- `app_users` : utilisateurs gérés par le compte connecté
+
+Les règles de sécurité Supabase sont activées sur les deux tables. Chaque compte ne peut lire et modifier que ses propres données.
+
+## 4. Compte admin
 
 Le compte admin est créé par `./setup`.
 
@@ -102,7 +154,7 @@ docker compose run --rm app npm run setup-admin
 
 Si le compte existe déjà, le script garde le même email et remplace le mot de passe par un nouveau.
 
-## 4. Où modifier le code
+## 5. Où modifier le code
 
 Les fichiers importants sont dans `src`.
 
@@ -113,9 +165,26 @@ Les fichiers importants sont dans `src`.
 - `src/styles.css` : le style visuel
 - `backend` : l'API locale du projet
 
-Pour modifier le dashboard, commencez par `src/pages/Dashboard.jsx`.
+Pour modifier la page publique, commencez par :
+
+```text
+src/pages/PublicHome.jsx
+```
+
+Pour modifier le dashboard, commencez par :
+
+```text
+src/pages/Dashboard.jsx
+```
 
 Pour modifier les notes, regardez `src/components/NoteForm.jsx` et `src/components/NotesList.jsx`.
+
+Pour modifier la gestion des utilisateurs, regardez :
+
+```text
+src/hooks/useManagedUsers.js
+src/services/usersService.js
+```
 
 Pour tester le backend :
 
@@ -123,7 +192,7 @@ Pour tester le backend :
 curl http://localhost:8080/api/health
 ```
 
-## 5. Commandes utiles
+## 6. Commandes utiles
 
 Relancer le projet :
 
@@ -155,7 +224,25 @@ Appliquer la migration Supabase :
 docker compose run --rm app npm run migrate
 ```
 
-## 6. Comment ajouter une fonctionnalité simple
+Créer ou régénérer le compte admin :
+
+```bash
+docker compose run --rm app npm run setup-admin
+```
+
+Lancer sans Docker :
+
+```bash
+npm run dev:local
+```
+
+Vérifier que l'application compile :
+
+```bash
+npm run build
+```
+
+## 7. Comment ajouter une fonctionnalité simple
 
 Faites un petit changement à la fois.
 
@@ -199,7 +286,7 @@ npm run work:cancel
 
 Ces commandes testent le projet et envoient les sauvegardes sur GitHub automatiquement.
 
-## 7. Déployer
+## 8. Déployer
 
 Créez un compte Vercel.
 
@@ -212,7 +299,7 @@ Dans les réglages du projet Vercel, ajoutez les mêmes variables que dans `.env
 
 Cliquez ensuite sur Deploy.
 
-## 8. Que faire si ça ne marche pas
+## 9. Que faire si ça ne marche pas
 
 Vérifiez dans cet ordre :
 

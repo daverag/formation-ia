@@ -10,7 +10,12 @@
     "configure-supabase": "node scripts/configure-supabase.js",
     "migrate": "node scripts/apply-schema.js",
     "setup-admin": "node scripts/create-admin.js",
-    "reset": "node scripts/reset.js"
+    "reset": "node scripts/reset.js",
+    "work:start": "node scripts/gitflow.js start",
+    "work:save": "node scripts/gitflow.js save",
+    "work:finish": "node scripts/gitflow.js finish",
+    "work:cancel": "node scripts/gitflow.js cancel",
+    "work:status": "node scripts/gitflow.js status"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

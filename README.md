@@ -143,11 +143,43 @@ Faites un petit changement à la fois.
 
 Exemple :
 
-1. Ajoutez un champ dans le formulaire.
-2. Ajoutez ce champ dans Supabase.
-3. Affichez ce champ dans la liste.
-4. Testez dans le navigateur.
-5. Faites un commit Git si tout fonctionne.
+1. Commencez le changement.
+2. Modifiez une petite partie.
+3. Testez dans le navigateur.
+4. Sauvegardez.
+5. Continuez ou terminez le changement.
+
+Commencer :
+
+```bash
+npm run work:start "nom du changement"
+```
+
+Sauvegarder une étape :
+
+```bash
+npm run work:save "message court"
+```
+
+Terminer :
+
+```bash
+npm run work:finish "message final"
+```
+
+Voir où vous en êtes :
+
+```bash
+npm run work:status
+```
+
+Annuler le travail en cours :
+
+```bash
+npm run work:cancel
+```
+
+Ces commandes testent le projet et envoient les sauvegardes sur GitHub automatiquement.
 
 ## 7. Déployer
 
